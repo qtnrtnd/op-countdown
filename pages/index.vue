@@ -1,7 +1,12 @@
 <template>
   <main>
     <h1>Auto-destruction d'Optic Performance dans :</h1>
-    <number-card :n="countdown" />
+    <div class="countdown">
+      <number-card :n="d" />
+      <number-card :n="h" />
+      <number-card :n="m" />
+      <number-card :n="s" />
+    </div>
   </main>
 </template>
 
@@ -9,13 +14,34 @@
 export default {
   name: 'HomePage',
   data: () => ({
-    countdown: 6000
+    countdown: 120
   }),
+  computed: {
+    s () {
+      return this.countdown % 60
+    },
+    m () {
+      return Math.floor(this.countdown / 60) % 60
+    },
+    h () {
+      return Math.floor(this.countdown / 60 / 60) % 24
+    },
+    d () {
+      return Math.floor(this.countdown / 60 / 60 / 24) % 24
+    }
+  },
   mounted () {
-    /* const days = Math.floor(this.countdown / (1000 * 60 * 60 * 24))
-    const hours = Math.floor((this.countdown % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))
-    const minutes = Math.floor((this.countdown % (1000 * 60 * 60)) / (1000 * 60)) */
-    this.s = Math.floor((this.countdown % (1000 * 60)) / 1000)
+    const that = this
+    const timer = setInterval(() => {
+      that.countdown--
+      if (that.countdown === 0) { clearInterval(timer) }
+    }, 1000)
   }
 }
 </script>
+
+<style lang="scss">
+  .countdown{
+    display: flex;
+  }
+</style>

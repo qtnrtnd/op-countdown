@@ -1,17 +1,17 @@
 <template>
-  <div class="card-container" :class="{lever: lever}" @click="lever = !lever">
-    <div class="card">
-      <div class="current-top semi-card top">
-        <p>{{ twoDigits(n) }}</p>
+  <div class="card-container">
+    <div class="card" :class="{ 'down': down, 'no-transition': noTransition }">
+      <div class="next-top semi-card top">
+        <p>{{ twoDigits(nData - 1) }}</p>
       </div>
       <div class="current-bottom semi-card bottom">
-        <p>{{ twoDigits(n) }}</p>
+        <p>{{ twoDigits(nData) }}</p>
       </div>
-      <div class="next-top semi-card top">
-        <p>{{ twoDigits(n + 1) }}</p>
+      <div class="next-bottom semi-card bottom" @transitionend="resetTransition()">
+        <p>{{ twoDigits(nData - 1) }}</p>
       </div>
-      <div class="next-bottom semi-card bottom">
-        <p>{{ twoDigits(n + 1) }}</p>
+      <div class="current-top semi-card top">
+        <p>{{ twoDigits(nData) }}</p>
       </div>
     </div>
   </div>
@@ -26,37 +26,66 @@ export default {
       default: 0
     }
   },
-  data: () => ({
-    lever: false
-  }),
+  data: function () {
+    return {
+      down: false,
+      noTransition: true,
+      nData: this.n
+    }
+  },
+  watch: {
+    n () {
+      this.noTransition = false
+      this.down = true
+    }
+  },
   methods: {
     twoDigits (n) {
       return n < 10 ? '0' + n.toString() : n.toString()
+    },
+    resetTransition () {
+      if (this.nData === 0) { this.nData = 59 } else { this.nData-- }
+      this.noTransition = true
+      this.down = false
     }
   }
 }
 </script>
 
 <style lang="scss">
+
   $offset: 3.75rem;
 
-  .card-container.lever{
-    .next-top{
-      transform: none;
-    }
-  .current-bottom{
-    transform: rotateX(180deg);
-  }
-
+  .card-container{
+    margin: 0 1rem;
   }
 
   .card{
     position: relative;
     perspective: 1000px;
     transform-style: preserve-3d;
-    display: inline-block;
+
+    &.down{
+      .next-bottom{
+        transform: none;
+      }
+      .current-top{
+        transform: rotateX(-180deg);
+      }
+    }
+
+    &.no-transition {
+
+      .next-bottom,
+      .current-top{
+        transition: none;
+      }
+
+    }
+
     p{
       font-size: 15rem;
+      user-select: none;
     }
   }
 
@@ -89,23 +118,23 @@ export default {
     }
   }
 
-  .next-top,
-  .current-bottom{
+  .next-bottom,
+  .current-top{
     position: absolute;
-    transition: transform 1s;
+    transition: transform .7s;
     backface-visibility: hidden;
   }
 
-  .current-bottom{
-    bottom: 0;
-    transform-origin: top;
+  .current-top{
+    top: 0;
+    transform-origin: bottom;
     z-index: 1;
   }
 
-  .next-top{
-    top: 0;
-    transform-origin: bottom;
-        transform: rotateX(-180deg);
+  .next-bottom{
+    bottom: 0;
+    transform-origin: top;
+        transform: rotateX(180deg);
 
   }
 </style>
