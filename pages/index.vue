@@ -14,7 +14,7 @@
 export default {
   name: 'HomePage',
   data: () => ({
-    initialCountdown: 142563
+    initialCountdown: 28 * 24 * 60 * 60
   })
 }
 </script>
@@ -22,5 +22,21 @@ export default {
 <style lang="scss">
   .countdown{
     display: flex;
+  }
+  main{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-image: linear-gradient(120deg, hsl(11, 70%, 75%), hsl(11, 70%, 50%))
+  }
+  h1{
+    font-weight: 500;
+    margin-bottom: 2rem;
+    font-size: 3rem;
+    color: white;
+    margin-top: -2rem;
   }
 </style>

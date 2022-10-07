@@ -1,6 +1,6 @@
 <template>
   <div class="card-container">
-    <div class="card" :class="{ 'down': down, 'no-transition': noTransition }">
+    <div :class="[{ 'down': down, 'no-transition': noTransition }, 'card', type]">
       <div class="next-top semi-card top">
         <p>{{ twoDigits(compMinus) }}</p>
       </div>
@@ -14,6 +14,9 @@
         <p>{{ twoDigits(comp) }}</p>
       </div>
     </div>
+    <p class="label">
+      {{ fullString(type) }}
+    </p>
   </div>
 </template>
 
@@ -42,7 +45,7 @@ export default {
       return this[this.type](this.countdown)
     },
     compMinus () {
-      return this[this.type](this.countdown - 1, 0)
+      return this[this.type](this.countdown - 1)
     }
   },
   mounted () {
@@ -51,10 +54,20 @@ export default {
     }, { immediate: true })
 
     const that = this
-    const timer = setInterval(() => {
+    const interval = 1000 // ms
+    let expected = Date.now() + interval
+    setTimeout(step, interval)
+    function step () {
+      const dt = Date.now() - expected // the drift (positive for overshooting)
+      if (dt > interval) {
+        console.warn('The drift exceeded the interval.')
+      }
       that.countdown--
-      if (that.countdown === 0) { clearInterval(timer) }
-    }, 1000)
+      if (that.countdown > 0) {
+        expected += interval
+        setTimeout(step, Math.max(0, interval - dt)) // take into account drift
+      }
+    }
   },
   methods: {
     twoDigits (value) {
@@ -83,6 +96,24 @@ export default {
     },
     d (value) {
       return Math.floor(value / 60 / 60 / 24)
+    },
+    fullString (char) {
+      let str
+      switch (char) {
+        case 's':
+          str = 'Secondes'
+          break
+        case 'm':
+          str = 'Minutes'
+          break
+        case 'h':
+          str = 'Heures'
+          break
+        case 'd':
+          str = 'Jours'
+          break
+      }
+      return str
     }
   }
 }
@@ -90,7 +121,7 @@ export default {
 
 <style lang="scss">
 
-  $offset: 3.75rem;
+  $offset: 2.25rem;
 
   .card-container{
     margin: 0 1rem;
@@ -98,8 +129,36 @@ export default {
 
   .card{
     position: relative;
-    perspective: 1100px;
+    perspective: 1200px;
     transform-style: preserve-3d;
+
+    &.s{
+      .next-bottom,
+      .current-top{
+        transition-duration: .7s;
+      }
+    }
+
+    &.m{
+      .next-bottom,
+      .current-top{
+        transition-duration: .9s;
+      }
+    }
+
+    &.h{
+      .next-bottom,
+      .current-top{
+        transition-duration: 1.1s;
+      }
+    }
+
+    &.d{
+      .next-bottom,
+      .current-top{
+        transition-duration: 1.3s;
+      }
+    }
 
     &.down{
       .next-bottom{
@@ -120,14 +179,14 @@ export default {
     }
 
     p{
-      font-size: 15rem;
+      font-size: 8rem;
       user-select: none;
     }
   }
 
   .semi-card{
-    width: 23rem;
-    height: 7.5rem;
+    width: 13rem;
+    height: 4.5rem;
     background-color: lightblue;
     overflow: hidden;
     display: flex;
@@ -157,7 +216,7 @@ export default {
   .next-bottom,
   .current-top{
     position: absolute;
-    transition: transform .7s;
+    transition-property: transform;
     backface-visibility: hidden;
   }
 
@@ -170,7 +229,19 @@ export default {
   .next-bottom{
     bottom: 0;
     transform-origin: top;
-        transform: rotateX(180deg);
+    transform: rotateX(180deg);
+  }
 
+  .label{
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 2rem;
+    text-transform: uppercase;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.3rem;
+    background-image: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.09) 50%);
+    letter-spacing: 0.1em;
+    font-weight: 500;
   }
 </style>
