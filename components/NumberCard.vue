@@ -2,16 +2,16 @@
   <div class="card-container">
     <div class="card" :class="{ 'down': down, 'no-transition': noTransition }">
       <div class="next-top semi-card top">
-        <p>{{ twoDigits(nData - 1) }}</p>
+        <p>{{ twoDigits(compMinus) }}</p>
       </div>
       <div class="current-bottom semi-card bottom">
-        <p>{{ twoDigits(nData) }}</p>
+        <p>{{ twoDigits(comp) }}</p>
       </div>
-      <div class="next-bottom semi-card bottom" @transitionend="resetTransition()">
-        <p>{{ twoDigits(nData - 1) }}</p>
+      <div class="next-bottom semi-card bottom" @transitionend="transitionEndHandler">
+        <p>{{ twoDigits(compMinus) }}</p>
       </div>
       <div class="current-top semi-card top">
-        <p>{{ twoDigits(nData) }}</p>
+        <p>{{ twoDigits(comp) }}</p>
       </div>
     </div>
   </div>
@@ -21,32 +21,68 @@
 export default {
   name: 'NumberCardComponent',
   props: {
-    n: {
+    initial: {
       type: Number,
       default: 0
+    },
+    type: {
+      type: String,
+      default: 's'
     }
   },
   data: function () {
     return {
       down: false,
       noTransition: true,
-      nData: this.n
+      countdown: this.initial
     }
   },
-  watch: {
-    n () {
-      this.noTransition = false
-      this.down = true
+  computed: {
+    comp () {
+      return this[this.type](this.countdown)
+    },
+    compMinus () {
+      return this[this.type](this.countdown - 1, 0)
     }
+  },
+  mounted () {
+    this.$watch('compMinus', function () {
+      if (this.comp !== this.compMinus && this.countdown > 0) { this.fireTransition() }
+    }, { immediate: true })
+
+    const that = this
+    const timer = setInterval(() => {
+      that.countdown--
+      if (that.countdown === 0) { clearInterval(timer) }
+    }, 1000)
   },
   methods: {
-    twoDigits (n) {
-      return n < 10 ? '0' + n.toString() : n.toString()
+    twoDigits (value) {
+      value = Math.max(value, 0)
+      return value < 10 ? '0' + value.toString() : value.toString()
     },
-    resetTransition () {
-      if (this.nData === 0) { this.nData = 59 } else { this.nData-- }
+    fireTransition () {
+      this.noTransition = false
+      this.down = true
+    },
+    transitionEndHandler () {
       this.noTransition = true
       this.down = false
+      this.$el.querySelector('.current-top p').textContent =
+      this.$el.querySelector('.current-bottom p').textContent =
+      this.twoDigits(this.compMinus)
+    },
+    s (value) {
+      return value % 60
+    },
+    m (value) {
+      return Math.floor(value / 60) % 60
+    },
+    h (value) {
+      return Math.floor(value / 60 / 60) % 24
+    },
+    d (value) {
+      return Math.floor(value / 60 / 60 / 24)
     }
   }
 }
@@ -62,7 +98,7 @@ export default {
 
   .card{
     position: relative;
-    perspective: 1000px;
+    perspective: 1100px;
     transform-style: preserve-3d;
 
     &.down{
