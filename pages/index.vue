@@ -1,12 +1,7 @@
 <template>
   <main>
     <h1>Auto-destruction d'Optic Performance dans :</h1>
-    <div class="countdown">
-      <number-card type="d" :initial="initialCountdown" />
-      <number-card type="h" :initial="initialCountdown" />
-      <number-card type="m" :initial="initialCountdown" />
-      <number-card type="s" :initial="initialCountdown" />
-    </div>
+    <countdown template="d h m s" :initial="initialCountdown" :animate="true" />
   </main>
 </template>
 
@@ -30,7 +25,7 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-image: linear-gradient(120deg, hsl(11, 70%, 75%), hsl(11, 70%, 50%))
+    background-color: #F47C62;
   }
   h1{
     font-weight: 500;

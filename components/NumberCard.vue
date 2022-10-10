@@ -1,17 +1,21 @@
 <template>
-  <div class="card-container">
+  <div class="card-content">
     <div :class="[{ 'down': down, 'no-transition': noTransition }, 'card', type]">
       <div class="next-top semi-card top">
         <p>{{ twoDigits(compMinus) }}</p>
       </div>
       <div class="current-bottom semi-card bottom">
-        <p>{{ twoDigits(comp) }}</p>
+        <p ref="pBottom">
+          {{ twoDigits(comp) }}
+        </p>
       </div>
       <div class="next-bottom semi-card bottom" @transitionend="transitionEndHandler">
         <p>{{ twoDigits(compMinus) }}</p>
       </div>
       <div class="current-top semi-card top">
-        <p>{{ twoDigits(comp) }}</p>
+        <p ref="pTop">
+          {{ twoDigits(comp) }}
+        </p>
       </div>
     </div>
     <p class="label">
@@ -21,23 +25,27 @@
 </template>
 
 <script>
+
 export default {
   name: 'NumberCardComponent',
   props: {
-    initial: {
-      type: Number,
-      default: 0
-    },
     type: {
       type: String,
       default: 's'
+    },
+    countdown: {
+      type: Number,
+      default: 0
+    },
+    animate: {
+      type: Boolean,
+      default: true
     }
   },
   data: function () {
     return {
       down: false,
-      noTransition: true,
-      countdown: this.initial
+      noTransition: true
     }
   },
   computed: {
@@ -50,29 +58,15 @@ export default {
   },
   mounted () {
     this.$watch('compMinus', function () {
-      if (this.comp !== this.compMinus && this.countdown > 0) { this.fireTransition() }
+      if (this.comp !== this.compMinus && this.countdown > 0) {
+        this.animate ? this.fireTransition() : this.transitionEndHandler()
+      }
     }, { immediate: true })
-
-    const that = this
-    const interval = 1000 // ms
-    let expected = Date.now() + interval
-    setTimeout(step, interval)
-    function step () {
-      const dt = Date.now() - expected // the drift (positive for overshooting)
-      if (dt > interval) {
-        console.warn('The drift exceeded the interval.')
-      }
-      that.countdown--
-      if (that.countdown > 0) {
-        expected += interval
-        setTimeout(step, Math.max(0, interval - dt)) // take into account drift
-      }
-    }
   },
   methods: {
     twoDigits (value) {
       value = Math.max(value, 0)
-      return value < 10 ? '0' + value.toString() : value.toString()
+      return value < 10 ? '0' + value : value
     },
     fireTransition () {
       this.noTransition = false
@@ -81,8 +75,8 @@ export default {
     transitionEndHandler () {
       this.noTransition = true
       this.down = false
-      this.$el.querySelector('.current-top p').textContent =
-      this.$el.querySelector('.current-bottom p').textContent =
+      this.$refs.pTop.textContent =
+      this.$refs.pBottom.textContent =
       this.twoDigits(this.compMinus)
     },
     s (value) {
@@ -122,10 +116,6 @@ export default {
 <style lang="scss">
 
   $offset: 2.25rem;
-
-  .card-container{
-    margin: 0 1rem;
-  }
 
   .card{
     position: relative;
@@ -199,7 +189,7 @@ export default {
       p{
         position: relative;
         bottom: -$offset;
-        color: rgba(255,255,255,0.8);
+        color: rgba(255,255,255,0.75);
       }
     }
 
