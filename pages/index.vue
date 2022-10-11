@@ -1,6 +1,12 @@
 <template>
   <main>
-    <countdown title="Auto-destruction d'Optic Performance dans :" :initial="initialCountdown" template="dhms" :animate="true" @countdownend="countdownEndHandler" />
+    <countdown
+      title="Auto-destruction d'Optic Performance dans :"
+      :initial="initialCountdown"
+      template="dhms"
+      :animate="true"
+      @countdownend="countdownEndHandler"
+    />
   </main>
 </template>
 
@@ -8,11 +14,11 @@
 export default {
   name: 'HomePage',
   data: () => ({
-    initialCountdown: 5
+    initialCountdown: 10
   }),
   methods: {
     countdownEndHandler () {
-      alert('Fin !!!')
+      console.log('finnn')
     }
   }
 }

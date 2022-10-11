@@ -89,7 +89,7 @@ export default {
       this.down = false
       this.$refs.pTop.textContent =
       this.$refs.pBottom.textContent =
-      this.twoDigits(value ? this[this.type](value - 1) : this.compMinus)
+      this.twoDigits(value !== null ? this[this.type](value - 1) : this.compMinus)
     },
     s (value) {
       return value % 60
