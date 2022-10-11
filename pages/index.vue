@@ -1,7 +1,6 @@
 <template>
   <main>
-    <h1>Auto-destruction d'Optic Performance dans :</h1>
-    <countdown template="d h m s" :initial="initialCountdown" :animate="true" />
+    <countdown title="Auto-destruction d'Optic Performance dans :" :initial="initialCountdown" template="dhms" :animate="true" @countdownend="countdownEndHandler" />
   </main>
 </template>
 
@@ -9,15 +8,17 @@
 export default {
   name: 'HomePage',
   data: () => ({
-    initialCountdown: 28 * 24 * 60 * 60
-  })
+    initialCountdown: 5
+  }),
+  methods: {
+    countdownEndHandler () {
+      alert('Fin !!!')
+    }
+  }
 }
 </script>
 
 <style lang="scss">
-  .countdown{
-    display: flex;
-  }
   main{
     width: 100vw;
     height: 100vh;
@@ -26,12 +27,6 @@ export default {
     align-items: center;
     flex-direction: column;
     background-color: #F47C62;
-  }
-  h1{
-    font-weight: 500;
-    margin-bottom: 2rem;
-    font-size: 3rem;
-    color: white;
-    margin-top: -2rem;
+    padding: 0 2%;
   }
 </style>

@@ -22,6 +22,10 @@ export default {
     '~/assets/css/index.scss'
   ],
 
+  ngrok: {
+    // module options
+    authtoken: process.env.NGROK_AUTHTOKEN
+  },
   styleResources: {
     scss: [
       '~/assets/sass/variables.scss'
@@ -40,7 +44,8 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
-    '@nuxtjs/style-resources'
+    '@nuxtjs/style-resources',
+    '@nuxtjs/ngrok'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules

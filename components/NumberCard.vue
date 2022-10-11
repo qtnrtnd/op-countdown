@@ -18,14 +18,14 @@
         </p>
       </div>
     </div>
-    <p class="label">
-      {{ fullString(type) }}
-    </p>
+    <div class="label-container">
+      <p ref="label" class="label" />
+    </div>
   </div>
 </template>
 
 <script>
-
+import Vue from 'vue'
 export default {
   name: 'NumberCardComponent',
   props: {
@@ -40,6 +40,10 @@ export default {
     animate: {
       type: Boolean,
       default: true
+    },
+    bus: {
+      type: Object,
+      default: new Vue()
     }
   },
   data: function () {
@@ -56,12 +60,20 @@ export default {
       return this[this.type](this.countdown - 1)
     }
   },
+  created () {
+    this.bus.$on('immediate_render', (value) => {
+      requestAnimationFrame(() => {
+        this.transitionEndHandler(null, value)
+      })
+    })
+  },
   mounted () {
     this.$watch('compMinus', function () {
       if (this.comp !== this.compMinus && this.countdown > 0) {
         this.animate ? this.fireTransition() : this.transitionEndHandler()
       }
     }, { immediate: true })
+    this.$refs.label.innerHTML = this.fullString(this.type)
   },
   methods: {
     twoDigits (value) {
@@ -72,12 +84,12 @@ export default {
       this.noTransition = false
       this.down = true
     },
-    transitionEndHandler () {
+    transitionEndHandler (e, value = null) {
       this.noTransition = true
       this.down = false
       this.$refs.pTop.textContent =
       this.$refs.pBottom.textContent =
-      this.twoDigits(this.compMinus)
+      this.twoDigits(value ? this[this.type](value - 1) : this.compMinus)
     },
     s (value) {
       return value % 60
@@ -95,16 +107,16 @@ export default {
       let str
       switch (char) {
         case 's':
-          str = 'Secondes'
+          str = 'Sec<span>ondes</span>'
           break
         case 'm':
-          str = 'Minutes'
+          str = 'Min<span>utes</span>'
           break
         case 'h':
-          str = 'Heures'
+          str = 'H<span>eures</span>'
           break
         case 'd':
-          str = 'Jours'
+          str = 'J<span>ours</span>'
           break
       }
       return str
@@ -115,7 +127,14 @@ export default {
 
 <style lang="scss">
 
-  $offset: 2.25rem;
+  $offset: 0.281em;
+
+  .card-container{
+
+    &:not(:last-child){
+      margin-right: 2em;
+    }
+  }
 
   .card{
     position: relative;
@@ -169,20 +188,20 @@ export default {
     }
 
     p{
-      font-size: 8rem;
+      font-size: 8em;
       user-select: none;
     }
   }
 
   .semi-card{
-    width: 13rem;
-    height: 4.5rem;
+    width: 13em;
+    height: 4.5em;
     background-color: lightblue;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 0.75rem;
+    border-radius: 0.75em;
 
     &.top{
       background-color: $darkblue;
@@ -222,14 +241,18 @@ export default {
     transform: rotateX(180deg);
   }
 
+  .label-container{
+    margin-top: 1.9em;
+
+  }
+
   .label{
-    font-size: 0.9rem;
+    font-size: 1rem;
     text-align: center;
-    margin-top: 2rem;
     text-transform: uppercase;
     color: white;
-    padding: 0.5rem;
-    border-radius: 0.3rem;
+    padding: 0.6em;
+    border-radius: 0.3em;
     background-image: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.09) 50%);
     letter-spacing: 0.1em;
     font-weight: 500;
