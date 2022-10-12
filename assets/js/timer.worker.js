@@ -26,7 +26,7 @@ self.addEventListener('message', (e) => {
     if (e.data.value) {
       countdown = e.data.value
     } else {
-      countdown = Math.max(0, Math.ceil(countdown - (Date.now() - lastPause) / 1000))
+      countdown = Math.max(0, Math.round(countdown - (Date.now() - lastPause) / 1000))
       paused = false
       self.postMessage({ subject: 'immediate_render', value: countdown })
     }

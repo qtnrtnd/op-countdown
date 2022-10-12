@@ -1,10 +1,6 @@
 <template>
   <main>
     <countdown
-      title="Auto-destruction d'Optic Performance dans :"
-      :initial="initialCountdown"
-      template="dhms"
-      :animate="true"
       @countdownend="countdownEndHandler"
     />
   </main>
@@ -14,11 +10,11 @@
 export default {
   name: 'HomePage',
   data: () => ({
-    initialCountdown: 10
+    deadline: '2022-10-20'
   }),
   methods: {
     countdownEndHandler () {
-      console.log('finnn')
+      alert('finn')
     }
   }
 }
@@ -32,7 +28,7 @@ export default {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #F47C62;
+    background-color: white;
     padding: 0 2%;
   }
 </style>

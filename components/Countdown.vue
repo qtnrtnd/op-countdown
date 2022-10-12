@@ -1,6 +1,8 @@
 <template>
-  <div class="countdown-component">
-    <h1>{{ title }}</h1>
+  <div id="op-countdown" :style="{'--card-bg-color': cardBgColor, '--card-txt-color': cardTxtColor, '--txt-color': txtColor, '--label-bg-color-1': labelBgColor1, '--label-bg-color-2': labelBgColor2 }">
+    <p class="title">
+      {{ title }}
+    </p>
     <div class="countdown">
       <div v-for="(cardType, i) in cardTypes" :key="i" class="card-container">
         <number-card :type="cardType" :countdown="countdown" :animate="animate" :bus="bus" />
@@ -16,31 +18,55 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Title'
+      default: 'Powered by Optic Performance 👓'
     },
     template: {
       type: String,
       default: 'dhms'
     },
-    initial: {
-      type: Number,
-      default: 0
+    deadline: {
+      type: String,
+      default: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
     },
     animate: {
       type: Boolean,
       default: true
+    },
+    cardBgColor: {
+      type: String,
+      default: '#2D475A'
+    },
+    cardTxtColor: {
+      type: String,
+      default: 'whitesmoke'
+    },
+    txtColor: {
+      type: String,
+      default: '#2D475A'
+    },
+    labelBgColor: {
+      type: String,
+      default: '#bababa'
     }
   },
   data: function () {
     return {
       cardTypes: this.template.split(''),
-      countdown: this.initial,
+      countdown: Math.round((new Date(this.deadline).getTime() - Date.now()) / 1000),
       documentHidden: false,
       paused: false,
       ended: false,
       launchPause: null,
       mobile: null,
       bus: new Vue()
+    }
+  },
+  computed: {
+    labelBgColor1 () {
+      return this.labelBgColor + '33'
+    },
+    labelBgColor2 () {
+      return this.labelBgColor + '17'
     }
   },
   created () {
@@ -90,22 +116,45 @@ export default {
 
 <style lang="scss">
 
-  .countdown-component{
+  #op-countdown{
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
 
-  .countdown{
+    .countdown{
     display: flex;
     font-size: max(min(1.2vw, 1.1rem), 0.3rem);
   }
 
-  h1{
+  .semi-card{
+    p{
+      color: var(--card-txt-color)
+    }
+    &.top{
+      background-color: var(--card-bg-color);
+      .p-container{
+        opacity: 0.75;
+      }
+    }
+    &.bottom{
+      background: linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)),
+      linear-gradient(var(--card-bg-color), var(--card-bg-color));
+      .p-container{
+        opacity: 0.9;
+      }
+    }
+  }
+
+  .label{
+    color: var(--txt-color);
+    background: linear-gradient(180deg, var(--label-bg-color-1), var(--label-bg-color-2));
+  }
+
+  .title{
     font-weight: 500;
     margin-bottom: 2rem;
     font-size: 3rem;
-    color: white;
+    color: var(--txt-color);
     margin-top: -2rem;
     text-align: center;
   }
@@ -119,6 +168,7 @@ export default {
         }
       }
     }
+  }
   }
 
 </style>

@@ -127,7 +127,8 @@ export default {
 
 <style lang="scss">
 
-  $offset: 0.281em;
+  #op-countdown{
+    $offset: 0.281em;
 
   .card-container{
 
@@ -196,30 +197,24 @@ export default {
   .semi-card{
     width: 13em;
     height: 4.5em;
-    background-color: lightblue;
     overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 0.75em;
 
-    &.top{
-      background-color: $darkblue;
-      p{
+    &.top p{
         position: relative;
         bottom: -$offset;
         color: rgba(255,255,255,0.75);
-      }
     }
 
-    &.bottom{
-      background-color: adjust-color($darkblue, $lightness: 5%);
-      p{
+    &.bottom p{
         position: relative;
         bottom: $offset;
         color: rgba(255,255,255,0.9);
-      }
     }
+
   }
 
   .next-bottom,
@@ -250,11 +245,10 @@ export default {
     font-size: 1rem;
     text-align: center;
     text-transform: uppercase;
-    color: white;
     padding: 0.6em;
     border-radius: 0.3em;
-    background-image: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.09) 50%);
     letter-spacing: 0.1em;
     font-weight: 500;
+  }
   }
 </style>
