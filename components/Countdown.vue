@@ -25,8 +25,8 @@ export default {
       default: 'dhms'
     },
     deadline: {
-      type: Date,
-      default: () => { return new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) }
+      type: String,
+      default: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
     },
     animate: {
       type: Boolean,
