@@ -1,8 +1,8 @@
-import TimerWorker from '~/assets/js/timer.worker.js'
+import TimerWorker from '~/assets/op-countdown/js/timer.worker.js'
 
 export default (context, inject) => {
   inject('worker', {
-    createWorker () {
+    createTimerWorker () {
       return new TimerWorker()
     }
   })

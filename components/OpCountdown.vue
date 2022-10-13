@@ -5,7 +5,7 @@
     </p>
     <div class="countdown">
       <div v-for="(cardType, i) in cardTypes" :key="i" class="card-container">
-        <number-card :type="cardType" :countdown="countdown" :animate="animate" :bus="bus" />
+        <op-number-card :type="cardType" :countdown="countdown" :animate="animate" :bus="bus" />
       </div>
     </div>
   </div>
@@ -26,7 +26,7 @@ export default {
     },
     deadline: {
       type: Date,
-      default: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
+      default: () => { return new Date(Date.now() + 10 * 24 * 60 * 60 * 1000) }
     },
     animate: {
       type: Boolean,
@@ -71,7 +71,7 @@ export default {
   },
   created () {
     if (process.browser) {
-      this.worker = this.$worker.createWorker()
+      this.worker = this.$worker.createTimerWorker()
       this.worker.addEventListener('message', this.workerResponseHandler)
       this.worker.postMessage({ subject: 'start', value: this.countdown })
     }

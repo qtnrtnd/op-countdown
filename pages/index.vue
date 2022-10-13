@@ -1,6 +1,6 @@
 <template>
   <main>
-    <countdown
+    <op-countdown
       @countdownend="countdownEndHandler"
     />
   </main>
