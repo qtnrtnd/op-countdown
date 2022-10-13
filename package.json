@@ -1,9 +1,5 @@
 {
   "dependencies": {
     "worker-loader": "^3.0.8"
-  },
-  "devDependencies": {
-    "sass": "^1.55.0",
-    "sass-loader": "10"
   }
 }
