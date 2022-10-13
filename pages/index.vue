@@ -10,7 +10,7 @@
 export default {
   name: 'HomePage',
   data: () => ({
-    deadline: '2022-10-20'
+    deadline: new Date('2022-10-20')
   }),
   methods: {
     countdownEndHandler () {

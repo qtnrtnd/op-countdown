@@ -25,7 +25,7 @@ export default {
       default: 'dhms'
     },
     deadline: {
-      type: String,
+      type: Date,
       default: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000)
     },
     animate: {
